@@ -1,0 +1,14 @@
+#include <stdio.h>
+
+int main(void) {
+    unsigned char num = 0b00001100;
+    int bit_position = 3;           
+
+    printf("Original number : 0x%02X (binary: %08b)\n", num, num);
+
+    num ^= (1 << bit_position);
+
+    printf("After toggling bit %d: 0x%02X (binary: %08b)\n", bit_position, num, num);
+
+    return 0;
+}
