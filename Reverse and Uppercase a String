@@ -1,0 +1,28 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <cctype>  // For toupper
+
+using namespace std;
+
+void reverseAndUppercase(string& str) {
+
+    reverse(str.begin(), str.end());
+
+    for (char &ch : str) {
+        ch = toupper(ch); 
+    }
+}
+
+int main() {
+    string input;
+
+    cout << "Enter a string: ";
+    getline(cin, input);
+
+    reverseAndUppercase(input);
+
+    cout << "Reversed and Uppercase: " << input << endl;
+
+    return 0;
+}
