@@ -1,0 +1,15 @@
+def is_automorphic(num):
+    if num < 1 or num > 9:
+        return "Invalid input"
+    
+    square = num * num
+    if str(square).endswith(str(num)):
+        return f"{num} is an automorphic number."
+    else:
+        return f"{num} is not an automorphic number."
+
+try:
+    number = int(input("Enter a single-digit positive number: "))
+    print(is_automorphic(number))
+except ValueError:
+    print("Invalid input")
