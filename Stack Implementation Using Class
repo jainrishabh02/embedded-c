@@ -1,0 +1,37 @@
+class Stack:
+    def __init__(self):
+        self.stack = []
+
+    def push(self, item):
+        self.stack.append(item)
+        print(f"Pushed {item} to the stack.")
+
+    def pop(self):
+        if not self.is_empty():
+            item = self.stack.pop()
+            print(f"Popped {item} from the stack.")
+            return item
+        else:
+            print("Stack is empty. Cannot pop.")
+
+    def is_empty(self):
+        return len(self.stack) == 0
+
+    def display(self):
+        print("Current Stack:", self.stack)
+
+s = Stack()
+
+while True:
+    print("\n1. Push\n2. Pop\n3. Display\n4. Exit")
+    choice = input("Enter your choice: ")
+
+    if choice == '1':
+        item = input("Enter item to push: ")
+        s.push(item)
+    elif choice == '2':
+        s.pop()
+    elif choice == '3':
+        s.display()
+    elif choice == '4':
+        print("Ex
