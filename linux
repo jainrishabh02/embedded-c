@@ -1,0 +1,11 @@
+mkdir ~/test_new  #Create a new folder test_new in the home directory:
+
+chmod 000 ~/test_new  #Remove all permissions of the test_new directory:
+
+touch ~/test_new/new.txt  # Create a new.txt file inside test_new without changing permissions:
+
+rm -r ~/test_new  #Delete the test_new directory without changing permissions:
+
+
+
+
