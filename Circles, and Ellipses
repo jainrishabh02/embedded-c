@@ -1,0 +1,59 @@
+import cv2
+import numpy as np
+
+image = cv2.imread('your_image.jpg', cv2.IMREAD_COLOR)
+
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+blurred = cv2.GaussianBlur(gray, (15, 15), 0)
+
+
+circles = cv2.HoughCircles(
+    blurred, 
+    cv2.HOUGH_GRADIENT, 
+    dp=1.2, 
+    minDist=30, 
+    param1=50, 
+    param2=30, 
+    minRadius=10, 
+    maxRadius=100
+)
+
+if circles is not None:
+    circles = np.round(circles[0, :]).astype("int")
+    for (x, y, r) in circles:
+        cv2.circle(image, (x, y), r, (0, 255, 0), 4)  # Draw the circle center
+        cv2.rectangle(image, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)  # Draw the circle outline
+
+cv2.imshow("Circles", image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+
+
+Detecting Ellipses using Contour Approximation---->
+
+import cv2
+import numpy as np
+
+image = cv2.imread('your_image.jpg', cv2.IMREAD_COLOR)
+
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+_, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+
+contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+for contour in contours:
+    if len(contour) >= 5:
+        ellipse = cv2.fitEllipse(contour)
+        cv2.ellipse(image, ellipse, (0, 255, 0), 2)  # Draw the ellipse
+
+cv2.imshow("Ellipses", image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+
+
