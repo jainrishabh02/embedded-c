@@ -1,0 +1,88 @@
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "stdio.h"
+
+typedef struct {
+    uint32_t frameNumber;
+} FrameData;
+
+typedef struct {
+    uint32_t frameNumber;
+    char recognitionStatus[20];  // e.g., "Face Found" or "No Face"
+    TickType_t timestamp;
+} RecognitionResult;
+
+QueueHandle_t xFrameQueue;
+QueueHandle_t xResultQueue;
+
+void FrameCaptureTask(void *pvParameters) {
+    uint32_t frameCounter = 0;
+    FrameData frame;
+
+    while (1) {
+        frame.frameNumber = ++frameCounter;
+
+        xQueueSend(xFrameQueue, &frame, portMAX_DELAY);
+
+        
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+}
+
+void FaceRecognitionTask(void *pvParameters) {
+    FrameData frame;
+    RecognitionResult result;
+
+    while (1) {
+        if (xQueueReceive(xFrameQueue, &frame, portMAX_DELAY) == pdPASS) {
+      
+            vTaskDelay(pdMS_TO_TICKS(100));
+
+            result.frameNumber = frame.frameNumber;
+            result.timestamp = xTaskGetTickCount();
+
+            if (frame.frameNumber % 2 == 0) {
+                snprintf(result.recognitionStatus, sizeof(result.recognitionStatus), "Face Found");
+            } else {
+                snprintf(result.recognitionStatus, sizeof(result.recognitionStatus), "No Face");
+            }
+
+            xQueueSend(xResultQueue, &result, portMAX_DELAY);
+        }
+    }
+}
+
+void LoggerTask(void *pvParameters) {
+    RecognitionResult result;
+
+    while (1) {
+        
+        if (xQueueReceive(xResultQueue, &result, portMAX_DELAY) == pdPASS) {
+          
+            printf("Frame %lu: %s at tick %lu\n",
+                   result.frameNumber,
+                   result.recognitionStatus,
+                   result.timestamp);
+        }
+    }
+}
+
+
+int main(void) {
+    xFrameQueue = xQueueCreate(10, sizeof(FrameData));
+    xResultQueue = xQueueCreate(10, sizeof(RecognitionResult));
+
+    if (xFrameQueue == NULL || xResultQueue == NULL) {
+        return -1;
+    }
+
+    xTaskCreate(FrameCaptureTask, "FrameCapture", 128, NULL, 3, NULL);
+    xTaskCreate(FaceRecognitionTask, "FaceRecognition", 128, NULL, 2, NULL);
+    xTaskCreate(LoggerTask, "Logger", 128, NULL, 1, NULL);
+
+    vTaskStartScheduler();
+
+    for (;;) {}
+    return 0;
+}
