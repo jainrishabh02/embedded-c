@@ -1,0 +1,21 @@
+#include <iostream>
+using namespace std;
+
+void checkEvenOdd(int number) {
+    if (number & 1) {
+        cout << number << " is Odd." << endl;
+    } else {
+        cout << number << " is Even." << endl;
+    }
+}
+
+int main() {
+    int number;
+
+    cout << "Enter a number: ";
+    cin >> number;
+
+    checkEvenOdd(number);
+
+    return 0;
+}
